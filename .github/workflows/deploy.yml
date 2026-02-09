@@ -29,24 +29,73 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install dependencies (root — resolves workspaces)
+        run: npm install
+
+      - name: Install dependencies (apps/web — ensures local vite)
+        working-directory: apps/web
         run: npm install
 
       - name: Build web app
         working-directory: apps/web
-        run: npx vite build
+        run: npm run build
 
       - name: Add .nojekyll
         run: touch apps/web/dist/.nojekyll
 
-      - name: Verify build output
+      - name: HARD FAIL — verify build output
         run: |
-          echo "=== Build output ==="
-          ls -la apps/web/dist/
-          echo "=== index.html head ==="
-          head -20 apps/web/dist/index.html
-          echo "=== Checking for #root div ==="
-          grep -q 'id="root"' apps/web/dist/index.html && echo "OK: SPA index.html found" || (echo "FAIL: Not a SPA index.html" && exit 1)
+          set -euo pipefail
+
+          echo "=== Checking apps/web/dist/index.html ==="
+          if [ ! -f apps/web/dist/index.html ]; then
+            echo "FAIL: apps/web/dist/index.html does NOT exist"
+            exit 1
+          fi
+          echo "OK: index.html exists"
+
+          echo "=== Checking apps/web/dist/assets/ ==="
+          if [ ! -d apps/web/dist/assets ]; then
+            echo "FAIL: apps/web/dist/assets/ directory does NOT exist — Vite did not bundle JS/CSS"
+            exit 1
+          fi
+          ASSET_COUNT=$(ls -1 apps/web/dist/assets/ | wc -l)
+          if [ "$ASSET_COUNT" -lt 1 ]; then
+            echo "FAIL: apps/web/dist/assets/ is empty — no JS/CSS bundles"
+            exit 1
+          fi
+          echo "OK: assets/ contains $ASSET_COUNT files"
+
+          echo "=== Checking total dist size ==="
+          DIST_SIZE_KB=$(du -sk apps/web/dist | cut -f1)
+          echo "Dist size: ${DIST_SIZE_KB} KB"
+          if [ "$DIST_SIZE_KB" -lt 300 ]; then
+            echo "FAIL: dist is only ${DIST_SIZE_KB} KB — expected >= 300 KB for a real Vite build"
+            exit 1
+          fi
+          echo "OK: dist size ${DIST_SIZE_KB} KB >= 300 KB"
+
+          echo "=== Checking SPA index.html has script tag ==="
+          if ! grep -q '<script' apps/web/dist/index.html; then
+            echo "FAIL: index.html has no <script> tag — not a Vite build output"
+            exit 1
+          fi
+          echo "OK: index.html contains script references"
+
+          echo "=== Checking .nojekyll ==="
+          if [ ! -f apps/web/dist/.nojekyll ]; then
+            echo "FAIL: .nojekyll not found"
+            exit 1
+          fi
+          echo "OK: .nojekyll present"
+
+          echo ""
+          echo "=== Full dist listing ==="
+          ls -laR apps/web/dist/
+          echo ""
+          du -sh apps/web/dist/
+          echo ""
+          echo "ALL CHECKS PASSED"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -54,7 +103,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./apps/web/dist
+          path: apps/web/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
