@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { colors } from '@echos/ui';
 import { useTranslation } from './i18n/index.js';
@@ -15,12 +15,65 @@ function Topbar() {
   const location = useLocation();
   const { t, lang, setLang } = useTranslation();
   const { theme, toggleTheme } = useTheme();
+  const [docsInView, setDocsInView] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null);
+
+  // IntersectionObserver for docs section on home page
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setDocsInView(false);
+      return;
+    }
+
+    let observer: IntersectionObserver | null = null;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const setup = () => {
+      const el = document.getElementById('docs-section');
+      if (!el) {
+        timeoutId = setTimeout(setup, 200);
+        return;
+      }
+      observer = new IntersectionObserver(
+        ([entry]) => setDocsInView(entry.isIntersecting),
+        { threshold: 0.1 },
+      );
+      observer.observe(el);
+    };
+
+    setup();
+
+    return () => {
+      clearTimeout(timeoutId);
+      observer?.disconnect();
+    };
+  }, [location.pathname]);
 
   const navItems = [
-    { label: t('nav.scan'), path: '/scan' },
-    { label: t('nav.manifesto'), path: '/manifesto' },
-    { label: t('nav.docs'), path: '/docs' },
+    { label: t('nav.docs'), key: 'docs', isDocsScroll: true },
+    { label: t('nav.manifesto'), key: 'manifesto', path: '/manifesto' },
+    { label: t('nav.scan'), key: 'scan', path: '/scan' },
   ];
+
+  const handleNavClick = (item: (typeof navItems)[0]) => {
+    if (item.isDocsScroll) {
+      if (location.pathname === '/') {
+        document.getElementById('docs-section')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/');
+        setTimeout(() => {
+          document.getElementById('docs-section')?.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
+    } else if (item.path) {
+      navigate(item.path);
+    }
+  };
+
+  const isTabActive = (item: (typeof navItems)[0]) => {
+    if (item.isDocsScroll) return docsInView;
+    return item.path ? location.pathname === item.path : false;
+  };
 
   // Logo: dark.png en mode sombre, white.png en mode clair
   const darkLogoSrc = `${import.meta.env.BASE_URL}logotype-02-dark.png`;
@@ -31,7 +84,10 @@ function Topbar() {
     <header className="echos-topbar">
       {/* Logo */}
       <button
-        onClick={() => navigate('/')}
+        onClick={() => {
+          navigate('/');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         style={{
           background: 'none',
           border: 'none',
@@ -49,7 +105,7 @@ function Topbar() {
         />
       </button>
 
-      {/* Nav - hidden on mobile */}
+      {/* Nav — hidden on mobile via CSS */}
       <nav
         style={{
           display: 'flex',
@@ -60,38 +116,45 @@ function Topbar() {
         className="topbar-nav"
       >
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const active = isTabActive(item);
+          const hovered = hoveredTab === item.key;
           return (
             <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
+              key={item.key}
+              onClick={() => handleNavClick(item)}
+              onMouseEnter={() => setHoveredTab(item.key)}
+              onMouseLeave={() => setHoveredTab(null)}
               style={{
                 position: 'relative',
                 padding: '24px 18px',
                 background: 'none',
                 border: 'none',
-                color: isActive ? 'var(--c-text-1)' : 'var(--c-text-2)',
+                color: active ? 'var(--c-text-1)' : 'var(--c-text-2)',
                 fontSize: '15px',
-                fontWeight: isActive ? 500 : 400,
+                fontWeight: active ? 500 : 400,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
                 transition: 'color 150ms ease',
               }}
             >
               {item.label}
-              {isActive && (
+              {/* Active indicator — thick, rounded, higher */}
+              {active && (
                 <span
+                  className="tab-active-indicator"
                   style={{
                     position: 'absolute',
-                    bottom: '0',
-                    left: '18px',
-                    right: '18px',
-                    height: '2px',
+                    bottom: '10px',
+                    left: '14px',
+                    right: '14px',
+                    height: '4px',
                     background: 'var(--c-accent)',
-                    borderRadius: '1px',
+                    borderRadius: '3px',
                   }}
                 />
               )}
+              {/* Hover wave indicator — CSS animated */}
+              {hovered && !active && <span className="tab-wave-indicator" />}
             </button>
           );
         })}
@@ -106,8 +169,8 @@ function Topbar() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '32px',
-          height: '32px',
+          width: '36px',
+          height: '36px',
           borderRadius: '9999px',
           border: '1px solid var(--c-border)',
           background: 'transparent',
@@ -118,7 +181,7 @@ function Topbar() {
         }}
         title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
       >
-        {theme === 'dark' ? <IconSun size={14} /> : <IconMoon size={14} />}
+        {theme === 'dark' ? <IconSun size={16} /> : <IconMoon size={16} />}
       </button>
 
       {/* Language toggle */}
@@ -146,9 +209,10 @@ function Topbar() {
         {lang === 'fr' ? 'EN' : 'FR'}
       </button>
 
-      {/* CTA */}
+      {/* CTA — hidden on mobile via CSS */}
       {!location.pathname.startsWith('/scan') && (
         <button
+          className="topbar-cta"
           onClick={() => navigate('/scan')}
           style={{
             padding: '10px 24px',
