@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, GlassPanel, colors } from '@echos/ui';
+import { Logo } from '../components/Logo.js';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -18,20 +19,10 @@ export function HomePage() {
       }}
     >
       <div style={{ textAlign: 'center', maxWidth: '560px' }}>
-        <h1
-          style={{
-            fontSize: '64px',
-            fontWeight: 700,
-            letterSpacing: '-2px',
-            marginBottom: '8px',
-            background: `linear-gradient(135deg, ${colors.white} 0%, ${colors.primary} 100%)`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-        >
-          ECHOS
-        </h1>
+        <Logo
+          height={56}
+          style={{ margin: '0 auto 16px auto' }}
+        />
         <p
           style={{
             fontSize: '18px',

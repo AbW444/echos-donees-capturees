@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { StepIndicator, Button, colors } from '@echos/ui';
 import type { Step } from '@echos/ui';
 import { useAppState, type WizardStep } from '../store/app-state.js';
+import { Logo } from '../components/Logo.js';
 import { ImportStep } from '../components/ImportStep.js';
 import { CropStep } from '../components/CropStep.js';
 import { CalibrationStep } from '../components/CalibrationStep.js';
@@ -65,20 +66,7 @@ export function WizardPage() {
           zIndex: 50,
         }}
       >
-        <button
-          onClick={() => navigate('/')}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: colors.white,
-            fontSize: '20px',
-            fontWeight: 700,
-            letterSpacing: '-1px',
-            cursor: 'pointer',
-          }}
-        >
-          ECHOS
-        </button>
+        <Logo height={28} onClick={() => navigate('/')} />
 
         <div style={{ flex: 1, maxWidth: '700px', margin: '0 24px' }}>
           <StepIndicator
