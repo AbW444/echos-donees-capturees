@@ -46,7 +46,9 @@ export function WizardPage() {
       <div
         style={{
           borderBottom: `1px solid ${colors.border}`,
-          padding: '0 var(--content-gutter)',
+          maxWidth: '1100px',
+          margin: '0 auto',
+          padding: '0 clamp(20px, 5vw, 48px)',
         }}
       >
         <StepIndicator
@@ -59,7 +61,9 @@ export function WizardPage() {
       {/* Content */}
       <div
         style={{
-          padding: 'clamp(24px, 3vw, 48px) var(--content-gutter)',
+          maxWidth: '1100px',
+          margin: '0 auto',
+          padding: 'clamp(24px, 3vw, 48px) clamp(20px, 5vw, 48px)',
         }}
       >
         {(state.currentStep === 'home' || state.currentStep === 'import') && <ImportStep />}
