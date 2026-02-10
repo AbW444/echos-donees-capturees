@@ -32,36 +32,17 @@ export function HomePage() {
           padding: 'clamp(48px, 8vw, 100px) clamp(20px, 5vw, 48px) clamp(32px, 4vw, 64px)',
         }}
       >
-        {/* Logotype SVG — left-aligned, full width */}
+        {/* Logotype SVG — left-aligned */}
         <div style={{ marginBottom: '32px' }}>
           <img
             src="/echos-donees-capturees/logotype.svg"
             alt="échos — données capturées"
             style={{
-              height: 'clamp(48px, 7vw, 80px)',
-              width: 'auto',
+              width: 'clamp(280px, 35vw, 480px)',
+              height: 'auto',
               display: 'block',
             }}
-            onError={(e) => {
-              const el = e.target as HTMLImageElement;
-              el.style.display = 'none';
-              const fallback = el.nextElementSibling as HTMLElement;
-              if (fallback) fallback.style.display = 'block';
-            }}
           />
-          <h1
-            style={{
-              display: 'none',
-              fontFamily: fonts.display,
-              fontVariationSettings: "'wght' 500",
-              fontSize: 'clamp(48px, 8vw, 80px)',
-              lineHeight: 0.9,
-              letterSpacing: '-0.03em',
-              color: colors.accent,
-            }}
-          >
-            échos
-          </h1>
         </div>
 
         <p

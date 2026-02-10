@@ -30,13 +30,13 @@ function Topbar() {
         display: 'flex',
         alignItems: 'center',
         padding: '0 clamp(16px, 4vw, 40px)',
-        background: 'rgba(250, 250, 250, 0.92)',
+        background: 'rgba(17, 17, 17, 0.88)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
         borderBottom: `1px solid ${colors.border}`,
       }}
     >
-      {/* Logo — logotype-02.svg replaces icon + text */}
+      {/* Logo — logotype-02.svg only, no text */}
       <button
         onClick={() => navigate('/')}
         style={{
@@ -53,26 +53,7 @@ function Topbar() {
           src="/echos-donees-capturees/logotype-02.svg"
           alt="échos"
           style={{ height: '28px', width: 'auto' }}
-          onError={(e) => {
-            const el = e.target as HTMLImageElement;
-            el.style.display = 'none';
-            const fallback = el.nextElementSibling as HTMLElement;
-            if (fallback) fallback.style.display = 'block';
-          }}
         />
-        <span
-          style={{
-            display: 'none',
-            fontFamily: fonts.display,
-            fontVariationSettings: "'wght' 500",
-            fontSize: '24px',
-            lineHeight: 1,
-            color: colors.text1,
-            letterSpacing: '-0.02em',
-          }}
-        >
-          échos
-        </span>
       </button>
 
       {/* Nav — hidden on mobile */}
@@ -159,7 +140,7 @@ function Topbar() {
             borderRadius: '9999px',
             border: 'none',
             background: colors.accent,
-            color: '#FFFFFF',
+            color: colors.white,
             fontSize: '14px',
             fontWeight: 500,
             cursor: 'pointer',

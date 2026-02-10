@@ -1,46 +1,46 @@
 /**
- * ECHOS Design Tokens — Light mode, 3-color system
+ * ECHOS Design Tokens — Marketplace-inspired, 3-color system
  */
 
 export const colors = {
   // Brand triad
-  black: '#FAFAFA',
-  white: '#FFFFFF',
+  black: '#111111',
+  white: '#F2F2F2',
   accent: '#4221CE',
   accentHover: '#5835E4',
-  accentMuted: 'rgba(66, 33, 206, 0.08)',
+  accentMuted: 'rgba(66, 33, 206, 0.15)',
 
   // Surfaces
-  surface: '#FFFFFF',
-  surfaceHover: '#F5F5F7',
-  surfaceRaised: '#EFEFEF',
+  surface: '#1A1A1E',
+  surfaceHover: '#222228',
+  surfaceRaised: '#252530',
 
   // Borders
-  border: 'rgba(0, 0, 0, 0.10)',
-  borderHover: 'rgba(0, 0, 0, 0.16)',
-  borderActive: 'rgba(0, 0, 0, 0.24)',
+  border: 'rgba(255, 255, 255, 0.08)',
+  borderHover: 'rgba(255, 255, 255, 0.15)',
+  borderActive: 'rgba(255, 255, 255, 0.25)',
 
   // Text
-  text1: '#111111',
-  text2: 'rgba(17, 17, 17, 0.60)',
-  text3: 'rgba(17, 17, 17, 0.35)',
+  text1: '#F2F2F2',
+  text2: 'rgba(242, 242, 242, 0.55)',
+  text3: 'rgba(242, 242, 242, 0.3)',
 
   // Functional
-  success: '#059669',
-  warning: '#D97706',
-  error: '#DC2626',
+  success: '#34D399',
+  warning: '#FBBF24',
+  error: '#F87171',
 
   // Legacy aliases (backward compat)
   primary: '#4221CE',
   primaryLight: '#5835E4',
   primaryDark: '#3318A8',
-  blackLight: '#FFFFFF',
-  blackLighter: '#F5F5F7',
-  whiteDim: 'rgba(17, 17, 17, 0.60)',
-  whiteMuted: 'rgba(17, 17, 17, 0.35)',
-  glass: '#FFFFFF',
-  glassBorder: 'rgba(0, 0, 0, 0.10)',
-  glassHover: '#F5F5F7',
+  blackLight: '#1A1A1E',
+  blackLighter: '#252530',
+  whiteDim: 'rgba(242, 242, 242, 0.55)',
+  whiteMuted: 'rgba(242, 242, 242, 0.3)',
+  glass: '#1A1A1E',
+  glassBorder: 'rgba(255, 255, 255, 0.08)',
+  glassHover: '#222228',
 } as const;
 
 export const spacing = {
@@ -67,10 +67,10 @@ export const fonts = {
 } as const;
 
 export const shadows = {
-  sm: '0 1px 2px rgba(0, 0, 0, 0.06)',
-  md: '0 4px 12px rgba(0, 0, 0, 0.08)',
-  lg: '0 8px 24px rgba(0, 0, 0, 0.12)',
-  glow: '0 0 20px rgba(66, 33, 206, 0.15)',
+  sm: '0 1px 2px rgba(0, 0, 0, 0.3)',
+  md: '0 4px 12px rgba(0, 0, 0, 0.4)',
+  lg: '0 8px 24px rgba(0, 0, 0, 0.5)',
+  glow: '0 0 20px rgba(66, 33, 206, 0.25)',
 } as const;
 
 export const transitions = {

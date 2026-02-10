@@ -19,7 +19,7 @@ export function ManifestoPage() {
             lineHeight: 1,
             letterSpacing: '-0.02em',
             color: colors.text1,
-            marginBottom: '16px',
+            marginBottom: '4px',
           }}
         >
           {t('manifesto.title')}
