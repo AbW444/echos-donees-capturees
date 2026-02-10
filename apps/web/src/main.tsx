@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import '@echos/ui/styles.css';
 import { I18nProvider } from './i18n/index.js';
+import { ThemeProvider } from './theme/index.js';
 import { App } from './App.js';
 
 const rootEl = document.getElementById('root');
@@ -11,9 +12,11 @@ if (!rootEl) throw new Error('Root element not found');
 createRoot(rootEl).render(
   <React.StrictMode>
     <HashRouter>
-      <I18nProvider>
-        <App />
-      </I18nProvider>
+      <ThemeProvider>
+        <I18nProvider>
+          <App />
+        </I18nProvider>
+      </ThemeProvider>
     </HashRouter>
   </React.StrictMode>,
 );

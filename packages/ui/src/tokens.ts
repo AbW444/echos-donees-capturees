@@ -1,5 +1,5 @@
 /**
- * ECHOS Design Tokens — Marketplace-inspired, 3-color system
+ * ECHOS Design Tokens - Marketplace-inspired, 3-color system
  */
 
 export const colors = {

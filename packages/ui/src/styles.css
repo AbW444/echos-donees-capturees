@@ -1,4 +1,4 @@
-/* ECHOS Design System — Base Styles */
+/* ECHOS Design System - Base Styles */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -40,6 +40,30 @@
 
   --transition-fast: 150ms ease;
   --transition-normal: 200ms ease;
+}
+
+/* Light mode overrides */
+[data-theme="light"] {
+  --c-black: #F5F5F5;
+  --c-white: #111111;
+  --c-surface: #EAEAEF;
+  --c-surface-hover: #E0E0E8;
+  --c-surface-raised: #D8D8E2;
+  --c-border: rgba(0, 0, 0, 0.1);
+  --c-border-hover: rgba(0, 0, 0, 0.18);
+  --c-border-active: rgba(0, 0, 0, 0.28);
+  --c-text-1: #111111;
+  --c-text-2: rgba(17, 17, 17, 0.6);
+  --c-text-3: rgba(17, 17, 17, 0.35);
+  --color-black: #F5F5F5;
+  --color-white: #111111;
+  --color-surface: #EAEAEF;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+[data-theme="light"] body {
+  background: #F5F5F5;
+  color: #111111;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -112,7 +136,7 @@ input[type="range"]::-moz-range-thumb {
 }
 input[type="range"]:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* Visual placeholder — for image zones */
+/* Visual placeholder - for image zones */
 .visual-placeholder {
   background: var(--c-surface);
   border: 1px solid var(--c-border);

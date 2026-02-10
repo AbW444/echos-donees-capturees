@@ -1,8 +1,9 @@
 import React, { useReducer } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { colors, fonts } from '@echos/ui';
+import { colors } from '@echos/ui';
 import { useTranslation } from './i18n/index.js';
-import { IconGlobe } from './components/Icons.js';
+import { useTheme } from './theme/index.js';
+import { IconGlobe, IconSun, IconMoon } from './components/Icons.js';
 import { AppContext, appReducer, INITIAL_STATE } from './store/app-state.js';
 import { HomePage } from './pages/HomePage.js';
 import { WizardPage } from './pages/WizardPage.js';
@@ -13,12 +14,17 @@ function Topbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, lang, setLang } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
 
   const navItems = [
     { label: t('nav.scan'), path: '/scan' },
     { label: t('nav.manifesto'), path: '/manifesto' },
     { label: t('nav.docs'), path: '/docs' },
   ];
+
+  const logoSrc = theme === 'dark'
+    ? `${import.meta.env.BASE_URL}logotype-02.svg`
+    : `${import.meta.env.BASE_URL}logotype-02-white.svg`;
 
   return (
     <header
@@ -30,13 +36,14 @@ function Topbar() {
         display: 'flex',
         alignItems: 'center',
         padding: '0 clamp(16px, 4vw, 40px)',
-        background: 'rgba(17, 17, 17, 0.88)',
+        background: theme === 'dark' ? 'rgba(17, 17, 17, 0.88)' : 'rgba(245, 245, 245, 0.92)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: `1px solid ${colors.border}`,
+        borderBottom: '1px solid var(--c-border)',
+        transition: 'background 200ms ease',
       }}
     >
-      {/* Logo - logotype.png */}
+      {/* Logo - logotype-02.svg (dark) / logotype-02-white.svg (light) */}
       <button
         onClick={() => navigate('/')}
         style={{
@@ -50,13 +57,13 @@ function Topbar() {
         }}
       >
         <img
-          src={`${import.meta.env.BASE_URL}logotype.png`}
+          src={logoSrc}
           alt="echos"
           style={{ height: '28px', width: 'auto' }}
         />
       </button>
 
-      {/* Nav — hidden on mobile */}
+      {/* Nav - hidden on mobile */}
       <nav
         style={{
           display: 'flex',
@@ -77,7 +84,7 @@ function Topbar() {
                 padding: '24px 18px',
                 background: 'none',
                 border: 'none',
-                color: isActive ? colors.text1 : colors.text2,
+                color: isActive ? 'var(--c-text-1)' : 'var(--c-text-2)',
                 fontSize: '15px',
                 fontWeight: isActive ? 500 : 400,
                 cursor: 'pointer',
@@ -94,7 +101,7 @@ function Topbar() {
                     left: '18px',
                     right: '18px',
                     height: '2px',
-                    background: colors.accent,
+                    background: 'var(--c-accent)',
                     borderRadius: '1px',
                   }}
                 />
@@ -106,6 +113,28 @@ function Topbar() {
 
       <div style={{ flex: 1 }} />
 
+      {/* Theme toggle */}
+      <button
+        onClick={toggleTheme}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '32px',
+          height: '32px',
+          borderRadius: '9999px',
+          border: '1px solid var(--c-border)',
+          background: 'transparent',
+          color: 'var(--c-text-2)',
+          cursor: 'pointer',
+          transition: 'all 150ms ease',
+          marginRight: '8px',
+        }}
+        title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+      >
+        {theme === 'dark' ? <IconSun size={14} /> : <IconMoon size={14} />}
+      </button>
+
       {/* Language toggle */}
       <button
         onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
@@ -115,9 +144,9 @@ function Topbar() {
           gap: '6px',
           padding: '6px 12px',
           borderRadius: '9999px',
-          border: `1px solid ${colors.border}`,
+          border: '1px solid var(--c-border)',
           background: 'transparent',
-          color: colors.text2,
+          color: 'var(--c-text-2)',
           fontSize: '13px',
           fontWeight: 500,
           cursor: 'pointer',
@@ -140,7 +169,7 @@ function Topbar() {
             borderRadius: '9999px',
             border: 'none',
             background: colors.accent,
-            color: colors.white,
+            color: '#F2F2F2',
             fontSize: '14px',
             fontWeight: 500,
             cursor: 'pointer',
@@ -162,7 +191,7 @@ export function App() {
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: colors.black }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--c-black)', transition: 'background 200ms ease' }}>
         <Topbar />
         <main style={{ flex: 1 }}>
           <Routes>

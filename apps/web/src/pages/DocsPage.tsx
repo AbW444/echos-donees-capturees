@@ -47,46 +47,46 @@ export function DocsPage() {
           {t('docs.title')}
         </h1>
 
-        {/* Two-column grid — Z-reading order */}
+        {/* Two-column grid - Z-reading order */}
         <div
           className="docs-grid"
           style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}
         >
-          {/* Row 1, Left — Steps 1–4 */}
+          {/* Row 1, Left - Steps 1-4 */}
           <GlassPanel padding="32px">
-            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '24px', color: colors.accent }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '24px', color: colors.accent }}>
               {t('docs.userGuide')}
             </h2>
             {stepsLeft.map(({ title, body }) => (
               <div key={title} style={{ marginBottom: '20px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '8px', color: colors.text1 }}>{title}</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px', color: colors.text1 }}>{title}</h3>
                 <p style={{ color: colors.text2, lineHeight: '1.8', fontSize: '15px' }}>{body}</p>
               </div>
             ))}
           </GlassPanel>
 
-          {/* Row 1, Right — Steps 5–7 + Coordinate System */}
+          {/* Row 1, Right - Steps 5-7 + Coordinate System */}
           <div style={{ display: 'grid', gap: '28px' }}>
             <GlassPanel padding="32px">
-              <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '24px', color: colors.accent }}>
+              <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '24px', color: colors.accent }}>
                 {t('docs.userGuide')} (suite)
               </h2>
               {stepsRight.map(({ title, body }) => (
                 <div key={title} style={{ marginBottom: '20px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '8px', color: colors.text1 }}>{title}</h3>
+                  <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px', color: colors.text1 }}>{title}</h3>
                   <p style={{ color: colors.text2, lineHeight: '1.8', fontSize: '15px' }}>{body}</p>
                 </div>
               ))}
             </GlassPanel>
 
             <GlassPanel padding="32px">
-              <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px', color: colors.accent }}>
+              <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '16px', color: colors.accent }}>
                 {t('docs.coordSystem')}
               </h2>
               <ul style={{ color: colors.text2, lineHeight: '2', fontSize: '15px', paddingLeft: '20px' }}>
-                <li><strong style={{ color: colors.text1 }}>X</strong> — {t('docs.coordX')}</li>
-                <li><strong style={{ color: colors.text1 }}>Y</strong> — {t('docs.coordY')}</li>
-                <li><strong style={{ color: colors.text1 }}>Z</strong> — {t('docs.coordZ')}</li>
+                <li><strong style={{ color: colors.text1 }}>X</strong> <span style={{ color: colors.accent }}>-</span> {t('docs.coordX')}</li>
+                <li><strong style={{ color: colors.text1 }}>Y</strong> <span style={{ color: colors.accent }}>-</span> {t('docs.coordY')}</li>
+                <li><strong style={{ color: colors.text1 }}>Z</strong> <span style={{ color: colors.accent }}>-</span> {t('docs.coordZ')}</li>
               </ul>
               <p style={{ color: colors.text2, lineHeight: '1.8', fontSize: '14px', marginTop: '14px', fontFamily: 'var(--font-mono)' }}>
                 {t('docs.coordNote')}
@@ -94,9 +94,9 @@ export function DocsPage() {
             </GlassPanel>
           </div>
 
-          {/* Row 2, Left — Technical Concepts */}
+          {/* Row 2, Left - Technical Concepts */}
           <GlassPanel padding="32px">
-            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '24px', color: colors.accent }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '24px', color: colors.accent }}>
               {t('docs.techConcepts')}
             </h2>
             <div style={{ display: 'grid', gap: '18px' }}>
@@ -109,9 +109,9 @@ export function DocsPage() {
             </div>
           </GlassPanel>
 
-          {/* Row 2, Right — Privacy */}
+          {/* Row 2, Right - Privacy */}
           <GlassPanel padding="32px">
-            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px', color: colors.accent }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '16px', color: colors.accent }}>
               {t('docs.privacy')}
             </h2>
             <p style={{ color: colors.text2, lineHeight: '1.8', fontSize: '16px' }}>
