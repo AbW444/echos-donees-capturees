@@ -24,7 +24,10 @@ function Topbar() {
 
   const logoSrc = theme === 'dark'
     ? `${import.meta.env.BASE_URL}logotype-02.svg`
-    : `${import.meta.env.BASE_URL}logotype-02-white.png`;
+    : `${import.meta.env.BASE_URL}logotype-02-white.svg`;
+  const darkLogoSrc = `${import.meta.env.BASE_URL}logotype-02-dark.png`;
+  const lightLogoSrc = `${import.meta.env.BASE_URL}logotype-02-white.png`;
+  const logoSrc = theme === 'dark' ? darkLogoSrc : lightLogoSrc;
 
   return (
     <header
