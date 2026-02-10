@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { colors } from '@echos/ui';
 import { useTranslation } from './i18n/index.js';
@@ -15,12 +15,55 @@ function Topbar() {
   const location = useLocation();
   const { t, lang, setLang } = useTranslation();
   const { theme, toggleTheme } = useTheme();
+  const [docsInView, setDocsInView] = useState(false);
 
+  // Scroll detection: highlight "Documentation" when docs section is visible on homepage
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setDocsInView(false);
+      return;
+    }
+    const el = document.getElementById('docs-section');
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setDocsInView(entry.isIntersecting),
+      { threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
+  // Nav items — Documentation first (desktop only, hidden on mobile anyway)
   const navItems = [
+    { label: t('nav.docs'), path: '/docs', scrollTarget: 'docs-section' },
     { label: t('nav.scan'), path: '/scan' },
     { label: t('nav.manifesto'), path: '/manifesto' },
-    { label: t('nav.docs'), path: '/docs' },
   ];
+
+  const isNavActive = (item: typeof navItems[0]) => {
+    if (item.path === '/docs') {
+      return location.pathname === '/docs' || (location.pathname === '/' && docsInView);
+    }
+    return location.pathname === item.path;
+  };
+
+  const handleNavClick = (item: typeof navItems[0]) => {
+    if (item.scrollTarget && location.pathname === '/') {
+      // Smooth scroll to section on homepage
+      const el = document.getElementById(item.scrollTarget);
+      if (el) { el.scrollIntoView({ behavior: 'smooth' }); return; }
+    }
+    if (item.scrollTarget) {
+      // Navigate to home then scroll
+      navigate('/');
+      setTimeout(() => {
+        const el = document.getElementById(item.scrollTarget!);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return;
+    }
+    navigate(item.path);
+  };
 
   // Logo: dark.png en mode sombre, white.png en mode clair
   const darkLogoSrc = `${import.meta.env.BASE_URL}logotype-02-dark.png`;
@@ -49,7 +92,7 @@ function Topbar() {
         />
       </button>
 
-      {/* Nav - hidden on mobile */}
+      {/* Nav — hidden on mobile via CSS */}
       <nav
         style={{
           display: 'flex',
@@ -60,37 +103,29 @@ function Topbar() {
         className="topbar-nav"
       >
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const active = isNavActive(item);
           return (
             <button
               key={item.path}
-              onClick={() => navigate(item.path)}
+              onClick={() => handleNavClick(item)}
+              className="nav-item"
               style={{
                 position: 'relative',
                 padding: '24px 18px',
                 background: 'none',
                 border: 'none',
-                color: isActive ? 'var(--c-text-1)' : 'var(--c-text-2)',
+                color: active ? 'var(--c-text-1)' : 'var(--c-text-2)',
                 fontSize: '15px',
-                fontWeight: isActive ? 500 : 400,
+                fontWeight: active ? 500 : 400,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
                 transition: 'color 150ms ease',
               }}
             >
               {item.label}
-              {isActive && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    bottom: '0',
-                    left: '18px',
-                    right: '18px',
-                    height: '2px',
-                    background: 'var(--c-accent)',
-                    borderRadius: '1px',
-                  }}
-                />
+              {/* Active indicator — thicker, rounded, higher */}
+              {active && (
+                <span className="nav-indicator" />
               )}
             </button>
           );
@@ -146,9 +181,10 @@ function Topbar() {
         {lang === 'fr' ? 'EN' : 'FR'}
       </button>
 
-      {/* CTA */}
+      {/* CTA — hidden on mobile via CSS class */}
       {!location.pathname.startsWith('/scan') && (
         <button
+          className="topbar-cta"
           onClick={() => navigate('/scan')}
           style={{
             padding: '10px 24px',

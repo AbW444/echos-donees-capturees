@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Button, GlassPanel, colors, fonts } from '@echos/ui';
 import { useTranslation } from '../i18n/index.js';
 import { useTheme } from '../theme/index.js';
-import { IconImage, IconArrowRight } from '../components/Icons.js';
+import { IconImage } from '../components/Icons.js';
 import { ImageLightbox } from '../components/ImageLightbox.js';
+import { DocsSection } from '../components/DocsSection.js';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export function HomePage() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
+  const [hoveredGallery, setHoveredGallery] = useState<number | null>(null);
 
   const FEATURES = [
     { title: t('home.feat1.title'), desc: t('home.feat1.desc'), num: '01' },
@@ -39,13 +41,18 @@ export function HomePage() {
     `${import.meta.env.BASE_URL}hero-side.png`,
   ];
 
-  const galleryImages = [
-    `${import.meta.env.BASE_URL}gallery-01.png`,
-    `${import.meta.env.BASE_URL}gallery-03.png`,
-    `${import.meta.env.BASE_URL}gallery-04.png`,
-    `${import.meta.env.BASE_URL}gallery-05.png`,
-    `${import.meta.env.BASE_URL}gallery-06.png`,
+  const galleryItems = [
+    { file: 'gallery-01.png', flex: 2 },
+    { file: 'gallery-03.png', flex: 1 },
+    { file: 'gallery-04.png', flex: 1 },
+    { file: 'gallery-05.png', flex: 1 },
+    { file: 'gallery-06.png', flex: 1 },
   ];
+
+  const galleryImages = galleryItems.map((item) => `${import.meta.env.BASE_URL}${item.file}`);
+
+  // Margins reduced: tighter on desktop for more image space
+  const sectionPadding = '0 clamp(16px, 2.5vw, 24px)';
 
   return (
     <div style={{ background: colors.black }}>
@@ -54,19 +61,14 @@ export function HomePage() {
         style={{
           maxWidth: '1400px',
           margin: '0 auto',
-          padding: 'clamp(48px, 8vw, 100px) clamp(20px, 5vw, 48px) clamp(32px, 4vw, 64px)',
+          padding: 'clamp(48px, 8vw, 100px) clamp(16px, 2.5vw, 24px) clamp(32px, 4vw, 64px)',
         }}
       >
-        {/* Logotype PNG - left-aligned */}
         <div style={{ marginBottom: '32px' }}>
           <img
             src={`${import.meta.env.BASE_URL}${theme === 'dark' ? 'logotype.png' : 'logotype_dark.png'}`}
             alt="echos - donnees capturees"
-            style={{
-              width: 'clamp(280px, 35vw, 480px)',
-              height: 'auto',
-              display: 'block',
-            }}
+            style={{ width: 'clamp(280px, 35vw, 480px)', height: 'auto', display: 'block' }}
           />
         </div>
 
@@ -93,13 +95,7 @@ export function HomePage() {
       </section>
 
       {/* Hero visual zone */}
-      <section
-        style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '0 clamp(20px, 5vw, 48px) clamp(48px, 5vw, 80px)',
-        }}
-      >
+      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: `0 clamp(16px, 2.5vw, 24px) clamp(48px, 5vw, 80px)` }}>
         <div
           className="hero-visual-grid"
           style={{
@@ -109,87 +105,38 @@ export function HomePage() {
             gap: '16px',
           }}
         >
-          {/* Main hero visual */}
-          <div 
-            className="visual-placeholder" 
-            style={{ 
-              minHeight: '240px',
-              cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-            onClick={() => openLightbox(heroImages, 0)}
-            onMouseEnter={(e) => {
-              const img = e.currentTarget.querySelector('img');
-              if (img) {
-                img.style.transform = 'scale(1.05)';
-                img.style.filter = 'brightness(1.1)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              const img = e.currentTarget.querySelector('img');
-              if (img) {
-                img.style.transform = 'scale(1)';
-                img.style.filter = 'brightness(1)';
-              }
-            }}
-          >
-            <img
-              src={`${import.meta.env.BASE_URL}hero-main.png`}
-              alt=""
-              style={{
-                transition: 'transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 300ms ease',
+          {heroImages.map((src, i) => (
+            <div
+              key={src}
+              className="visual-placeholder"
+              style={{ minHeight: '240px', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+              onClick={() => openLightbox(heroImages, i)}
+              onMouseEnter={(e) => {
+                const img = e.currentTarget.querySelector('img');
+                if (img) { img.style.transform = 'scale(1.05)'; img.style.filter = 'brightness(1.1)'; }
               }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            />
-            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', pointerEvents: 'none' }}>
-              <IconImage size={32} color={colors.text3} />
-              <span style={{ fontSize: '13px' }}>hero-main.png</span>
-            </div>
-          </div>
-          {/* Side visual */}
-          <div 
-            className="visual-placeholder" 
-            style={{ 
-              minHeight: '240px',
-              cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-            onClick={() => openLightbox(heroImages, 1)}
-            onMouseEnter={(e) => {
-              const img = e.currentTarget.querySelector('img');
-              if (img) {
-                img.style.transform = 'scale(1.05)';
-                img.style.filter = 'brightness(1.1)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              const img = e.currentTarget.querySelector('img');
-              if (img) {
-                img.style.transform = 'scale(1)';
-                img.style.filter = 'brightness(1)';
-              }
-            }}
-          >
-            <img
-              src={`${import.meta.env.BASE_URL}hero-side.png`}
-              alt=""
-              style={{
-                transition: 'transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 300ms ease',
+              onMouseLeave={(e) => {
+                const img = e.currentTarget.querySelector('img');
+                if (img) { img.style.transform = 'scale(1)'; img.style.filter = 'brightness(1)'; }
               }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            />
-            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', pointerEvents: 'none' }}>
-              <IconImage size={32} color={colors.text3} />
-              <span style={{ fontSize: '13px' }}>hero-side.png</span>
+            >
+              <img
+                src={src}
+                alt=""
+                style={{ transition: 'transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 300ms ease' }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', pointerEvents: 'none' }}>
+                <IconImage size={32} color={colors.text3} />
+                <span style={{ fontSize: '13px' }}>{i === 0 ? 'hero-main.png' : 'hero-side.png'}</span>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
       {/* Stats */}
-      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 clamp(20px, 5vw, 48px) clamp(40px, 4vw, 64px)' }}>
+      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: `0 clamp(16px, 2.5vw, 24px) clamp(40px, 4vw, 64px)` }}>
         <div
           className="stats-row"
           style={{
@@ -220,7 +167,7 @@ export function HomePage() {
       </section>
 
       {/* How it works */}
-      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: 'clamp(40px, 4vw, 64px) clamp(20px, 5vw, 48px)' }}>
+      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: `clamp(40px, 4vw, 64px) clamp(16px, 2.5vw, 24px)` }}>
         <h2
           style={{
             fontFamily: fonts.display,
@@ -252,14 +199,7 @@ export function HomePage() {
               >
                 {f.num}
               </div>
-              <h3
-                style={{
-                  fontSize: '18px',
-                  fontWeight: 600,
-                  color: colors.text1,
-                  marginBottom: '10px',
-                }}
-              >
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: colors.text1, marginBottom: '10px' }}>
                 {f.title}
               </h3>
               <p style={{ fontSize: '15px', color: colors.text2, lineHeight: 1.6 }}>{f.desc}</p>
@@ -268,8 +208,8 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Gallery */}
-      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 clamp(20px, 5vw, 48px) clamp(48px, 6vw, 100px)' }}>
+      {/* Gallery — flex layout with dynamic hover grow */}
+      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: `0 clamp(16px, 2.5vw, 24px) clamp(48px, 6vw, 100px)` }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '24px' }}>
           <div>
             <h2
@@ -289,91 +229,92 @@ export function HomePage() {
           </div>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gridAutoRows: '200px',
-            gap: '16px',
-          }}
-        >
-          {[
-            { file: 'gallery-01.png', span: '2', index: 0 },
-            { file: 'gallery-03.png', span: '1', index: 1 },
-            { file: 'gallery-04.png', span: '1', index: 2 },
-            { file: 'gallery-05.png', span: '1', index: 3 },
-            { file: 'gallery-06.png', span: '1', index: 4 },
-          ].map((item) => (
-            <div
-              key={item.file}
-              className="visual-placeholder"
-              style={{
-                gridColumn: item.span === '2' ? 'span 2' : 'span 1',
-                minHeight: '200px',
-                cursor: 'pointer',
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-              onClick={() => openLightbox(galleryImages, item.index)}
-              onMouseEnter={(e) => {
-                const img = e.currentTarget.querySelector('img');
-                if (img) {
-                  img.style.transform = 'scale(1.05)';
-                  img.style.filter = 'brightness(1.1)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                const img = e.currentTarget.querySelector('img');
-                if (img) {
-                  img.style.transform = 'scale(1)';
-                  img.style.filter = 'brightness(1)';
-                }
-              }}
-            >
-              <img
-                src={`${import.meta.env.BASE_URL}${item.file}`}
-                alt=""
+        {/* Row 1: gallery-01 (wide) + gallery-03 */}
+        <div className="gallery-row" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+          {galleryItems.slice(0, 2).map((item, i) => {
+            const isHovered = hoveredGallery === i;
+            const otherHovered = hoveredGallery !== null && hoveredGallery !== i && hoveredGallery < 2;
+            return (
+              <div
+                key={item.file}
+                className="gallery-item visual-placeholder"
                 style={{
-                  transition: 'transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 300ms ease',
+                  flex: isHovered ? item.flex + 0.6 : otherHovered ? Math.max(item.flex - 0.3, 0.5) : item.flex,
+                  height: isHovered ? '240px' : '200px',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'flex 500ms cubic-bezier(0.34, 1.56, 0.64, 1), height 500ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 300ms ease',
+                  boxShadow: isHovered ? '0 12px 40px rgba(0,0,0,0.4)' : 'none',
+                  zIndex: isHovered ? 2 : 1,
                 }}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              />
-              <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', pointerEvents: 'none' }}>
-                <IconImage size={24} color={colors.text3} />
-                <span style={{ fontSize: '11px' }}>{item.file}</span>
+                onClick={() => openLightbox(galleryImages, i)}
+                onMouseEnter={() => setHoveredGallery(i)}
+                onMouseLeave={() => setHoveredGallery(null)}
+              >
+                <img
+                  src={`${import.meta.env.BASE_URL}${item.file}`}
+                  alt=""
+                  style={{ transition: 'filter 300ms ease' }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+                <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', pointerEvents: 'none' }}>
+                  <IconImage size={24} color={colors.text3} />
+                  <span style={{ fontSize: '11px' }}>{item.file}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
+        </div>
+
+        {/* Row 2: gallery-04, gallery-05, gallery-06 */}
+        <div className="gallery-row" style={{ display: 'flex', gap: '16px' }}>
+          {galleryItems.slice(2).map((item, localI) => {
+            const globalI = localI + 2;
+            const isHovered = hoveredGallery === globalI;
+            const otherHovered = hoveredGallery !== null && hoveredGallery !== globalI && hoveredGallery >= 2;
+            return (
+              <div
+                key={item.file}
+                className="gallery-item visual-placeholder"
+                style={{
+                  flex: isHovered ? 1.6 : otherHovered ? 0.85 : 1,
+                  height: isHovered ? '240px' : '200px',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'flex 500ms cubic-bezier(0.34, 1.56, 0.64, 1), height 500ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 300ms ease',
+                  boxShadow: isHovered ? '0 12px 40px rgba(0,0,0,0.4)' : 'none',
+                  zIndex: isHovered ? 2 : 1,
+                }}
+                onClick={() => openLightbox(galleryImages, globalI)}
+                onMouseEnter={() => setHoveredGallery(globalI)}
+                onMouseLeave={() => setHoveredGallery(null)}
+              >
+                <img
+                  src={`${import.meta.env.BASE_URL}${item.file}`}
+                  alt=""
+                  style={{ transition: 'filter 300ms ease' }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+                <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', pointerEvents: 'none' }}>
+                  <IconImage size={24} color={colors.text3} />
+                  <span style={{ fontSize: '11px' }}>{item.file}</span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* Bottom CTA */}
+      {/* Documentation — inline continuation */}
       <section
+        id="docs-section"
         style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '0 clamp(20px, 5vw, 48px) clamp(64px, 6vw, 120px)',
-          textAlign: 'center',
+          padding: `clamp(48px, 5vw, 80px) clamp(16px, 2.5vw, 24px) clamp(64px, 6vw, 120px)`,
         }}
       >
-        <div
-          style={{
-            background: colors.surface,
-            border: `1px solid ${colors.border}`,
-            borderRadius: '16px',
-            padding: 'clamp(40px, 4vw, 64px)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <p style={{ fontSize: '15px', color: colors.text3, maxWidth: '480px', lineHeight: 1.7, marginBottom: '28px' }}>
-            {t('home.description')}
-          </p>
-          <Button variant="primary" size="lg" onClick={() => navigate('/scan')}>
-            {t('home.cta')} <IconArrowRight size={16} />
-          </Button>
-        </div>
+        <DocsSection />
       </section>
 
       {/* Lightbox */}
