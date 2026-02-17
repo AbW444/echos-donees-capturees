@@ -11,7 +11,7 @@ if (!rootEl) throw new Error('Root element not found');
 
 createRoot(rootEl).render(
   <React.StrictMode>
-    <BrowserRouter basename="/echos-donees-capturees">
+    <BrowserRouter basename="/echos-data-capture">
       <ThemeProvider>
         <I18nProvider>
           <App />
